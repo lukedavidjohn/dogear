@@ -1,6 +1,7 @@
 /*global chrome*/
 import React, { Component } from "react";
 import { getBookmarks } from "./utils/getBookmarks";
+import SearchResults from "./components/SearchResults";
 
 class App extends Component {
   state = {
@@ -8,10 +9,11 @@ class App extends Component {
   };
   componentDidMount() {
     getBookmarks((bookmarks) => {
+      // sendMessage is for debugging
+      // chrome.runtime.sendMessage({ type: "getBookmarks", bookmarks });
       this.setState({
         bookmarks,
       });
-      // chrome.runtime.sendMessage({ type: "getBookmarks", bookmarks });
     });
   }
 
@@ -19,9 +21,10 @@ class App extends Component {
     const { bookmarks } = this.state;
     return (
       <div>
-        {bookmarks.map((bookmark) => {
-          return <li>{bookmark.title}</li>;
-        })}
+        <header>
+          <h1>DogEar</h1>
+        </header>
+        <SearchResults bookmarks={bookmarks} />
       </div>
     );
   }
