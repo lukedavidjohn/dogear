@@ -8,7 +8,7 @@ class SearchResults extends Component {
     return (
       <div>
         <input></input>
-        <ul>
+        <ul style={{ "list-style-type": "none" }}>
           {bookmarks.map((bookmark, idx) => {
             return <Result bookmark={bookmark} idx={idx} />;
           })}
