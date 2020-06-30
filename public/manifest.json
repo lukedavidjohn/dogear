@@ -2,10 +2,14 @@
   "name": "DogEar",
   "version": "1.0",
   "description": "Dynamic bookmark searching.",
-  "permissions": [""],
+  "permissions": ["bookmarks"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
+  },
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_icon": "dogear.png"
   },
   "manifest_version": 2
 }
