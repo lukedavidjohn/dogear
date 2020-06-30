@@ -3,14 +3,27 @@ import React, { Component } from "react";
 import { getBookmarks } from "./utils/getBookmarks";
 
 class App extends Component {
+  state = {
+    bookmarks: [],
+  };
   componentDidMount() {
     getBookmarks((bookmarks) => {
-      chrome.runtime.sendMessage({ type: "getBookmarks", bookmarks });
+      this.setState({
+        bookmarks,
+      });
+      // chrome.runtime.sendMessage({ type: "getBookmarks", bookmarks });
     });
   }
 
   render() {
-    return <div>HELLO</div>;
+    const { bookmarks } = this.state;
+    return (
+      <div>
+        {bookmarks.map((bookmark) => {
+          return <li>{bookmark.title}</li>;
+        })}
+      </div>
+    );
   }
 }
 
