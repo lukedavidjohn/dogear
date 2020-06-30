@@ -5,6 +5,7 @@ import SearchResults from "./components/SearchResults";
 
 class App extends Component {
   state = {
+    activeSuggestion: 0,
     bookmarks: [],
   };
   componentDidMount() {
@@ -18,13 +19,16 @@ class App extends Component {
   }
 
   render() {
-    const { bookmarks } = this.state;
+    const { activeSuggestion, bookmarks } = this.state;
     return (
       <div>
         <header>
           <h1>DogEar</h1>
         </header>
-        <SearchResults bookmarks={bookmarks} />
+        <SearchResults
+          activeSuggestion={activeSuggestion}
+          bookmarks={bookmarks}
+        />
       </div>
     );
   }

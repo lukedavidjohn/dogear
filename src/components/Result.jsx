@@ -1,12 +1,21 @@
 import React, { Component } from "react";
 
 class Result extends Component {
-  state = {
-    color: "#000",
-  };
   render() {
-    const { bookmark, idx } = this.props;
-    return <li key={idx}>{bookmark.title}</li>;
+    const { activeSuggestion, bookmark, idx } = this.props;
+    const inputProps = {
+      style: {
+        "background-color": "#FFF",
+      },
+    };
+    if (activeSuggestion === idx) {
+      inputProps.style["background-color"] = "#D3D3D3";
+    }
+    return (
+      <li key={idx} {...inputProps}>
+        {bookmark.title}
+      </li>
+    );
   }
 }
 
