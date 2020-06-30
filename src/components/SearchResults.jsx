@@ -7,7 +7,7 @@ class SearchResults extends Component {
     const { bookmarks } = this.props;
     return (
       <div>
-        <input></input>
+        <input autoFocus placeholder="DogEar Search" type="text"></input>
         <ul style={{ "list-style-type": "none" }}>
           {bookmarks.map((bookmark, idx) => {
             return <Result bookmark={bookmark} idx={idx} />;
