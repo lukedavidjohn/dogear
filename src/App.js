@@ -16,10 +16,9 @@ class App extends Component {
     const { value } = event.target;
     const { bookmarksOnMount } = this.state;
     const filteredBookmarks = searchFilter(bookmarksOnMount, value);
-    // chrome.runtime.sendMessage({
-    //   type: "filterOnChange",
-    //   filteredBookmarks,
-    // });
+    chrome.runtime.sendMessage({
+      type: "filterOnChange",
+    });
     this.setState({
       bookmarks: filteredBookmarks,
       searchStr: value,
@@ -28,10 +27,8 @@ class App extends Component {
 
   componentDidMount() {
     getBookmarks((displayTree) => {
-      // sendMessage is for debugging
       chrome.runtime.sendMessage({
         type: "getBookmarks",
-        displayTree,
       });
       this.setState({
         bookmarks: displayTree,
