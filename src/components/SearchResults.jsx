@@ -1,6 +1,11 @@
 /*global chrome*/
 import React, { Component } from "react";
 import Result from "./Result";
+import styled from "styled-components";
+
+const Input = styled.input`
+  width: 380px;
+`;
 
 class SearchResults extends Component {
   render() {
@@ -13,14 +18,14 @@ class SearchResults extends Component {
     } = this.props;
     return (
       <div>
-        <input
+        <Input
           autoFocus
           onChange={filterOnChange}
           onKeyDown={handleKeyStrokes}
           placeholder="DogEar Search"
           type="text"
           value={searchStr}
-        ></input>
+        ></Input>
         <ul style={{ "list-style-type": "none" }}>
           {searchStr === null
             ? []
