@@ -9,6 +9,7 @@ class App extends Component {
     activeSuggestion: 0,
     bookmarks: [],
     bookmarksOnMount: [],
+    folder: null,
     searchStr: null,
   };
 
@@ -23,10 +24,15 @@ class App extends Component {
   };
 
   handleKeyStrokes = (event) => {
-    const { activeSuggestion, bookmarks } = this.state;
+    const { activeSuggestion, bookmarks, searchStr } = this.state;
     const { key } = event;
+    const bookmark = bookmarks[activeSuggestion];
     const numBookmarksRendered = bookmarks.length;
     let suggestion = activeSuggestion;
+    chrome.runtime.sendMessage({
+      type: "onKeyDown",
+      key,
+    });
     if (key === "ArrowDown") {
       suggestion++;
       if (suggestion === numBookmarksRendered) {
@@ -46,17 +52,25 @@ class App extends Component {
       });
     }
     if (key === "Enter") {
-      if (bookmarks[activeSuggestion].type === "bookmark") {
+      if (bookmark.type === "bookmark") {
         chrome.tabs.update({
-          url: bookmarks[activeSuggestion].url,
+          url: bookmark.url,
         });
       }
-      if (bookmarks[activeSuggestion].type === "folder") {
+      if (bookmark.type === "folder") {
         this.setState({
-          bookmarks: bookmarks[activeSuggestion].children,
+          bookmarks: bookmark.children,
+          folder: bookmark.title,
           searchStr: "",
         });
       }
+    }
+    if (key === "Backspace" && searchStr === "") {
+      getBookmarks((displayTree) => {
+        this.setState({
+          bookmarks: displayTree,
+        });
+      });
     }
   };
 
@@ -74,12 +88,13 @@ class App extends Component {
 
   render() {
     const { filterOnChange, handleKeyStrokes } = this;
-    const { activeSuggestion, bookmarks, searchStr } = this.state;
+    const { activeSuggestion, bookmarks, folder, searchStr } = this.state;
     return (
       <div>
         <header>
           <h1>DogEar</h1>
         </header>
+        {folder ? <h2>{folder}</h2> : null}
         <SearchResults
           activeSuggestion={activeSuggestion}
           bookmarks={bookmarks}
