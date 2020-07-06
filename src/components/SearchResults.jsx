@@ -4,7 +4,12 @@ import Result from "./Result";
 
 class SearchResults extends Component {
   render() {
-    const { activeSuggestion, bookmarks, filterOnChange } = this.props;
+    const {
+      activeSuggestion,
+      bookmarks,
+      filterOnChange,
+      searchStr,
+    } = this.props;
     return (
       <div>
         <input
@@ -12,17 +17,20 @@ class SearchResults extends Component {
           onChange={filterOnChange}
           placeholder="DogEar Search"
           type="text"
+          value={searchStr}
         ></input>
         <ul style={{ "list-style-type": "none" }}>
-          {bookmarks.map((bookmark, idx) => {
-            return (
-              <Result
-                activeSuggestion={activeSuggestion}
-                bookmark={bookmark}
-                idx={idx}
-              />
-            );
-          })}
+          {searchStr === ""
+            ? []
+            : bookmarks.map((bookmark, idx) => {
+                return (
+                  <Result
+                    activeSuggestion={activeSuggestion}
+                    bookmark={bookmark}
+                    idx={idx}
+                  />
+                );
+              })}
         </ul>
       </div>
     );

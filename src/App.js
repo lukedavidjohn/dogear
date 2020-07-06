@@ -9,6 +9,7 @@ class App extends Component {
     activeSuggestion: 0,
     bookmarks: [],
     bookmarksOnMount: [],
+    searchStr: "",
   };
 
   filterOnChange = (event) => {
@@ -21,6 +22,7 @@ class App extends Component {
     // });
     this.setState({
       bookmarks: filteredBookmarks,
+      searchStr: value,
     });
   };
 
@@ -37,7 +39,7 @@ class App extends Component {
 
   render() {
     const { filterOnChange } = this;
-    const { activeSuggestion, bookmarks } = this.state;
+    const { activeSuggestion, bookmarks, searchStr } = this.state;
     return (
       <div>
         <header>
@@ -47,6 +49,7 @@ class App extends Component {
           activeSuggestion={activeSuggestion}
           bookmarks={bookmarks}
           filterOnChange={filterOnChange}
+          searchStr={searchStr}
         />
       </div>
     );
