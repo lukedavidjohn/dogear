@@ -9,6 +9,7 @@ export const getBookmarks = (callback) => {
 
     const displayTree = mapper(bookmarksBar);
     const otherBookmarksObject = {
+      parent: null,
       type: "folder",
       title: "Other Bookmarks",
       children: mapper(otherBookmarks),
