@@ -9,46 +9,55 @@ class App extends Component {
     activeSuggestion: 0,
     bookmarks: [],
     bookmarksOnMount: [],
-    searchStr: "",
+    searchStr: null,
   };
 
   filterOnChange = (event) => {
     const { value } = event.target;
     const { bookmarksOnMount } = this.state;
     const filteredBookmarks = searchFilter(bookmarksOnMount, value);
-    chrome.runtime.sendMessage({
-      type: "filterOnChange",
-    });
     this.setState({
       bookmarks: filteredBookmarks,
       searchStr: value,
     });
   };
 
-  highlightOnKeyDown = (event) => {
+  handleKeyStrokes = (event) => {
     const { activeSuggestion, bookmarks } = this.state;
     const { key } = event;
     const numBookmarksRendered = bookmarks.length;
     let suggestion = activeSuggestion;
-    // chrome.runtime.sendMessage({
-    //   type: "onKeyDown",
-    //   key,
-    // });
-    if (event.key === "ArrowDown") {
+    if (key === "ArrowDown") {
       suggestion++;
       if (suggestion === numBookmarksRendered) {
         suggestion = 0;
       }
+      this.setState({
+        activeSuggestion: suggestion,
+      });
     }
-    if (event.key === "ArrowUp") {
+    if (key === "ArrowUp") {
       suggestion--;
       if (suggestion < 0) {
         suggestion = numBookmarksRendered - 1;
       }
+      this.setState({
+        activeSuggestion: suggestion,
+      });
     }
-    this.setState({
-      activeSuggestion: suggestion,
-    });
+    if (key === "Enter") {
+      if (bookmarks[activeSuggestion].type === "bookmark") {
+        chrome.tabs.update({
+          url: bookmarks[activeSuggestion].url,
+        });
+      }
+      if (bookmarks[activeSuggestion].type === "folder") {
+        this.setState({
+          bookmarks: bookmarks[activeSuggestion].children,
+          searchStr: "",
+        });
+      }
+    }
   };
 
   componentDidMount() {
@@ -64,7 +73,7 @@ class App extends Component {
   }
 
   render() {
-    const { filterOnChange, highlightOnKeyDown } = this;
+    const { filterOnChange, handleKeyStrokes } = this;
     const { activeSuggestion, bookmarks, searchStr } = this.state;
     return (
       <div>
@@ -75,7 +84,7 @@ class App extends Component {
           activeSuggestion={activeSuggestion}
           bookmarks={bookmarks}
           filterOnChange={filterOnChange}
-          highlightOnKeyDown={highlightOnKeyDown}
+          handleKeyStrokes={handleKeyStrokes}
           searchStr={searchStr}
         />
       </div>
