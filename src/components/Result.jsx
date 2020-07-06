@@ -3,6 +3,11 @@ import React, { Component } from "react";
 class Result extends Component {
   render() {
     const { activeSuggestion, bookmark, idx } = this.props;
+    const { parent, title } = bookmark;
+    let displayName = title;
+    if (parent) {
+      displayName = `${parent} / ${title}`;
+    }
     const inputProps = {
       style: {
         "background-color": "#FFF",
@@ -13,7 +18,7 @@ class Result extends Component {
     }
     return (
       <li key={idx} {...inputProps}>
-        {bookmark.title}
+        {displayName}
       </li>
     );
   }
