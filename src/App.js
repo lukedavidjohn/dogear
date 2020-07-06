@@ -27,12 +27,15 @@ class App extends Component {
   };
 
   componentDidMount() {
-    getBookmarks((bookmarks) => {
+    getBookmarks((displayTree) => {
       // sendMessage is for debugging
-      // chrome.runtime.sendMessage({ type: "getBookmarks", bookmarks });
+      chrome.runtime.sendMessage({
+        type: "getBookmarks",
+        displayTree,
+      });
       this.setState({
-        bookmarks,
-        bookmarksOnMount: bookmarks,
+        bookmarks: displayTree,
+        bookmarksOnMount: displayTree,
       });
     });
   }
