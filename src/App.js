@@ -3,6 +3,11 @@ import React, { Component } from "react";
 import { getBookmarks } from "./utils/getBookmarks";
 import { searchFilter } from "./utils/searchFilter";
 import SearchResults from "./components/SearchResults";
+import styled from "styled-components";
+
+const Container = styled.div`
+  width: 400px;
+`;
 
 class App extends Component {
   state = {
@@ -90,7 +95,7 @@ class App extends Component {
     const { filterOnChange, handleKeyStrokes } = this;
     const { activeSuggestion, bookmarks, folder, searchStr } = this.state;
     return (
-      <div>
+      <Container>
         <header>
           <h1>DogEar</h1>
         </header>
@@ -102,7 +107,7 @@ class App extends Component {
           handleKeyStrokes={handleKeyStrokes}
           searchStr={searchStr}
         />
-      </div>
+      </Container>
     );
   }
 }
