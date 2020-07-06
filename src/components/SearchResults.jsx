@@ -8,7 +8,7 @@ class SearchResults extends Component {
       activeSuggestion,
       bookmarks,
       filterOnChange,
-      highlightOnKeyDown,
+      handleKeyStrokes,
       searchStr,
     } = this.props;
     return (
@@ -16,13 +16,13 @@ class SearchResults extends Component {
         <input
           autoFocus
           onChange={filterOnChange}
-          onKeyDown={highlightOnKeyDown}
+          onKeyDown={handleKeyStrokes}
           placeholder="DogEar Search"
           type="text"
           value={searchStr}
         ></input>
         <ul style={{ "list-style-type": "none" }}>
-          {searchStr === ""
+          {searchStr === null
             ? []
             : bookmarks.map((bookmark, idx) => {
                 return (
