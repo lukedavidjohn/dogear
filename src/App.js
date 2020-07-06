@@ -25,6 +25,32 @@ class App extends Component {
     });
   };
 
+  highlightOnKeyDown = (event) => {
+    const { activeSuggestion, bookmarks } = this.state;
+    const { key } = event;
+    const numBookmarksRendered = bookmarks.length;
+    let suggestion = activeSuggestion;
+    // chrome.runtime.sendMessage({
+    //   type: "onKeyDown",
+    //   key,
+    // });
+    if (event.key === "ArrowDown") {
+      suggestion++;
+      if (suggestion === numBookmarksRendered) {
+        suggestion = 0;
+      }
+    }
+    if (event.key === "ArrowUp") {
+      suggestion--;
+      if (suggestion < 0) {
+        suggestion = numBookmarksRendered - 1;
+      }
+    }
+    this.setState({
+      activeSuggestion: suggestion,
+    });
+  };
+
   componentDidMount() {
     getBookmarks((displayTree) => {
       chrome.runtime.sendMessage({
@@ -38,7 +64,7 @@ class App extends Component {
   }
 
   render() {
-    const { filterOnChange } = this;
+    const { filterOnChange, highlightOnKeyDown } = this;
     const { activeSuggestion, bookmarks, searchStr } = this.state;
     return (
       <div>
@@ -49,6 +75,7 @@ class App extends Component {
           activeSuggestion={activeSuggestion}
           bookmarks={bookmarks}
           filterOnChange={filterOnChange}
+          highlightOnKeyDown={highlightOnKeyDown}
           searchStr={searchStr}
         />
       </div>
