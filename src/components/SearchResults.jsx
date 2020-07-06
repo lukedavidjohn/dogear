@@ -4,10 +4,15 @@ import Result from "./Result";
 
 class SearchResults extends Component {
   render() {
-    const { activeSuggestion, bookmarks } = this.props;
+    const { activeSuggestion, bookmarks, filterOnChange } = this.props;
     return (
       <div>
-        <input autoFocus placeholder="DogEar Search" type="text"></input>
+        <input
+          autoFocus
+          onChange={filterOnChange}
+          placeholder="DogEar Search"
+          type="text"
+        ></input>
         <ul style={{ "list-style-type": "none" }}>
           {bookmarks.map((bookmark, idx) => {
             return (
