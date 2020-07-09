@@ -6,7 +6,8 @@ export const searchFilter = (inputArr, inputStr) => {
         acc.push(inputObj);
       }
       if (children) {
-        acc.push(...searchFilter(children, inputStr));
+        const childrenAsArray = Object.values(children);
+        acc.push(...searchFilter(childrenAsArray, inputStr));
       }
       return acc;
     }, []);
