@@ -9,7 +9,10 @@
   },
   "browser_action": {
     "default_popup": "index.html",
-    "default_icon": "dogear.png"
+    "default_icon": "dogear-black-128.png"
+  },
+  "icons": {
+    "128": "./dogear-white-128.png"
   },
   "manifest_version": 2
 }
