@@ -7,12 +7,5 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
-  if (request.type === "getBookmarks") {
-    // console.log(request.message);
-  }
-  if (request.type === "filterOnChange") {
-  }
-  if (request.type === "onKeyDown") {
-    // console.log(request.key);
-  }
+  console.log(request);
 });
