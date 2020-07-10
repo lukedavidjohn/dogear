@@ -14,7 +14,7 @@ class App extends Component {
     activeSuggestion: 0,
     bookmarks: [],
     bookmarksOnMount: [],
-    folder: null,
+    folderArr: ["."],
     searchStr: null,
   };
 
@@ -29,15 +29,18 @@ class App extends Component {
   };
 
   handleKeyStrokes = (event) => {
-    const { activeSuggestion, bookmarks, searchStr } = this.state;
+    const {
+      activeSuggestion,
+      bookmarks,
+      // bookmarksOnMount,
+      folderArr,
+      // searchStr,
+    } = this.state;
     const { key } = event;
     const bookmark = bookmarks[activeSuggestion];
     const numBookmarksRendered = bookmarks.length;
     let suggestion = activeSuggestion;
-    chrome.runtime.sendMessage({
-      type: "onKeyDown",
-      key,
-    });
+    const newFolderArr = folderArr;
     if (key === "ArrowDown") {
       suggestion++;
       if (suggestion === numBookmarksRendered) {
@@ -63,43 +66,43 @@ class App extends Component {
         });
       }
       if (bookmark.type === "folder") {
+        newFolderArr.push(bookmark.title);
         this.setState({
-          bookmarks: bookmark.children,
-          folder: bookmark.title,
+          activeSuggestion: 0,
+          bookmarks: Object.values(bookmark.children),
+          folderArr: newFolderArr,
           searchStr: "",
         });
       }
     }
-    if (key === "Backspace" && searchStr === "") {
-      getBookmarks((displayTree) => {
-        this.setState({
-          bookmarks: displayTree,
-        });
-      });
-    }
+    // if (key === "Backspace" && searchStr === "") {
+    //   this.setState({
+    //     bookmarks: bookmarks[bookmark.parent],
+    //     activeSuggestion: 0,
+    //     searchStr: "",
+    //   });
+    // }
   };
 
   componentDidMount() {
     getBookmarks((displayTree) => {
-      chrome.runtime.sendMessage({
-        type: "getBookmarks",
-      });
+      const bookmarks = Object.values(displayTree);
       this.setState({
-        bookmarks: displayTree,
-        bookmarksOnMount: displayTree,
+        bookmarks,
+        bookmarksOnMount: bookmarks,
       });
     });
   }
 
   render() {
     const { filterOnChange, handleKeyStrokes } = this;
-    const { activeSuggestion, bookmarks, folder, searchStr } = this.state;
+    const { activeSuggestion, bookmarks, folderArr, searchStr } = this.state;
     return (
       <Container>
         <header>
           <h1>DogEar</h1>
         </header>
-        {folder ? <h2>{folder}</h2> : null}
+        <h2>{folderArr.join("/")}</h2>
         <SearchResults
           activeSuggestion={activeSuggestion}
           bookmarks={bookmarks}
