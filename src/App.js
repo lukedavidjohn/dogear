@@ -34,7 +34,7 @@ class App extends Component {
       bookmarks,
       // bookmarksOnMount,
       folderArr,
-      // searchStr,
+      searchStr,
     } = this.state;
     const { key } = event;
     const bookmark = bookmarks[activeSuggestion];
@@ -75,13 +75,17 @@ class App extends Component {
         });
       }
     }
-    // if (key === "Backspace" && searchStr === "") {
-    //   this.setState({
-    //     bookmarks: bookmarks[bookmark.parent],
-    //     activeSuggestion: 0,
-    //     searchStr: "",
-    //   });
-    // }
+    if (key === "Backspace" && searchStr === "") {
+      if (newFolderArr.length > 1) {
+        newFolderArr.pop();
+      }
+      this.setState({
+        // activeSuggestion: 0,
+        // bookmarks: bookmarks[bookmark.parent],
+        folderArr: newFolderArr,
+        // searchStr: "",
+      });
+    }
   };
 
   componentDidMount() {
