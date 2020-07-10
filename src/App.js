@@ -21,7 +21,10 @@ class App extends Component {
   filterOnChange = (event) => {
     const { value } = event.target;
     const { bookmarksOnMount } = this.state;
-    const filteredBookmarks = searchFilter(bookmarksOnMount, value);
+    const filteredBookmarks = searchFilter(
+      Object.values(bookmarksOnMount),
+      value
+    );
     this.setState({
       bookmarks: filteredBookmarks,
       searchStr: value,
@@ -32,7 +35,7 @@ class App extends Component {
     const {
       activeSuggestion,
       bookmarks,
-      // bookmarksOnMount,
+      bookmarksOnMount,
       folderArr,
       searchStr,
     } = this.state;
@@ -76,12 +79,22 @@ class App extends Component {
       }
     }
     if (key === "Backspace" && searchStr === "") {
-      if (newFolderArr.length > 1) {
+      let parentBookmarks;
+      const parentFolder = newFolderArr[newFolderArr.length - 1];
+      if (newFolderArr.length === 1) {
+        return null;
+      } else if (newFolderArr.length === 2) {
         newFolderArr.pop();
+        parentBookmarks = Object.values(bookmarksOnMount);
+      } else if (newFolderArr.length > 2) {
+        newFolderArr.pop();
+        parentBookmarks = Object.values(
+          bookmarksOnMount[newFolderArr[newFolderArr.length - 1]].children
+        );
       }
       this.setState({
         // activeSuggestion: 0,
-        // bookmarks: bookmarks[bookmark.parent],
+        bookmarks: parentBookmarks,
         folderArr: newFolderArr,
         // searchStr: "",
       });
@@ -93,7 +106,7 @@ class App extends Component {
       const bookmarks = Object.values(displayTree);
       this.setState({
         bookmarks,
-        bookmarksOnMount: bookmarks,
+        bookmarksOnMount: displayTree,
       });
     });
   }
@@ -106,7 +119,7 @@ class App extends Component {
         <header>
           <h1>DogEar</h1>
         </header>
-        <h2>{folderArr.join("/")}</h2>
+        {folderArr.length > 1 ? <h2>{folderArr.join("/")}</h2> : null}
         <SearchResults
           activeSuggestion={activeSuggestion}
           bookmarks={bookmarks}
