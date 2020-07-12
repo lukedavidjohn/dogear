@@ -11,6 +11,15 @@
     "default_popup": "index.html",
     "default_icon": "dogear-black-128.png"
   },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Space",
+        "mac": "Command+Shift+Space"
+      },
+      "description": "opens pop-up"
+    }
+  },
   "icons": {
     "128": "./dogear-white-128.png"
   },

@@ -9,3 +9,7 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.runtime.onMessage.addListener((request, sender, sendMessage) => {
   console.log(request);
 });
+
+chrome.commands.onCommand.addListener((command) => {
+  console.log(command);
+});
