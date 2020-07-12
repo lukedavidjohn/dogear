@@ -2,7 +2,7 @@
   "name": "DogEar",
   "version": "1.0",
   "description": "Dynamic bookmark searching.",
-  "permissions": ["bookmarks"],
+  "permissions": ["bookmarks", "https://s2.googleusercontent.com/*"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
