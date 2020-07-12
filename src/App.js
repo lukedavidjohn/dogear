@@ -31,7 +31,7 @@ class App extends Component {
     });
   };
 
-  handleKeyStrokes = (event) => {
+  handleKeyDowns = (event) => {
     const {
       activeSuggestion,
       bookmarks,
@@ -39,7 +39,7 @@ class App extends Component {
       folderArr,
       searchStr,
     } = this.state;
-    const { key } = event;
+    const { key, metaKey } = event;
     const bookmark = bookmarks[activeSuggestion];
     const numBookmarksRendered = bookmarks.length;
     let suggestion = activeSuggestion;
@@ -64,9 +64,15 @@ class App extends Component {
     }
     if (key === "Enter") {
       if (bookmark.type === "bookmark") {
-        chrome.tabs.update({
-          url: bookmark.url,
-        });
+        if (metaKey) {
+          chrome.tabs.create({
+            url: bookmark.url,
+          });
+        } else {
+          chrome.tabs.update({
+            url: bookmark.url,
+          });
+        }
       }
       if (bookmark.type === "folder") {
         newFolderArr.push(bookmark.title);
@@ -112,7 +118,7 @@ class App extends Component {
   }
 
   render() {
-    const { filterOnChange, handleKeyStrokes } = this;
+    const { filterOnChange, handleKeyDowns } = this;
     const { activeSuggestion, bookmarks, folderArr, searchStr } = this.state;
     return (
       <Container>
@@ -124,7 +130,7 @@ class App extends Component {
           activeSuggestion={activeSuggestion}
           bookmarks={bookmarks}
           filterOnChange={filterOnChange}
-          handleKeyStrokes={handleKeyStrokes}
+          handleKeyDowns={handleKeyDowns}
           searchStr={searchStr}
         />
       </Container>
