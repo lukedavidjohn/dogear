@@ -1,4 +1,3 @@
-/*global chrome*/
 import React, { Component } from "react";
 import Result from "./Result";
 import styled from "styled-components";
@@ -11,7 +10,7 @@ class SearchResults extends Component {
   render() {
     const {
       activeSuggestion,
-      bookmarks,
+      bookmarkTree,
       filterOnChange,
       handleKeyDowns,
       searchStr,
@@ -29,7 +28,7 @@ class SearchResults extends Component {
         <ul style={{ "list-style-type": "none" }}>
           {searchStr === null
             ? []
-            : bookmarks.map((bookmark, idx) => {
+            : bookmarkTree.map((bookmark, idx) => {
                 return (
                   <Result
                     activeSuggestion={activeSuggestion}

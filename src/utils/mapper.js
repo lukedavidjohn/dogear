@@ -7,20 +7,20 @@ export const mapper = (tree, folderTitle) => {
     }
 
     if (!children) {
-      acc[title] = {
+      acc.push({
         parent,
         type: "bookmark",
         title,
         url,
-      };
+      });
     } else {
-      acc[title] = {
+      acc.push({
         parent,
         type: "folder",
         title,
         children: mapper(children, title),
-      };
+      });
     }
     return acc;
-  }, {});
+  }, []);
 };

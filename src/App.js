@@ -1,6 +1,6 @@
 /*global chrome*/
 import React, { Component } from "react";
-import { getBookmarks } from "./utils/getBookmarks";
+import { getBookmarkTree } from "./utils/getBookmarkTree";
 import { searchFilter } from "./utils/searchFilter";
 import SearchResults from "./components/SearchResults";
 import styled from "styled-components";
@@ -14,21 +14,18 @@ const Container = styled.div`
 class App extends Component {
   state = {
     activeSuggestion: 0,
-    bookmarks: [],
-    bookmarksOnMount: [],
+    bookmarkTreeOnRender: [],
+    bookmarkTreeOnMount: [],
     folderArr: ["."],
     searchStr: null,
   };
 
   filterOnChange = (event) => {
     const { value } = event.target;
-    const { bookmarksOnMount } = this.state;
-    const filteredBookmarks = searchFilter(
-      Object.values(bookmarksOnMount),
-      value
-    );
+    const { bookmarkTreeOnMount } = this.state;
+    const filteredBookmarkTree = searchFilter(bookmarkTreeOnMount, value);
     this.setState({
-      bookmarks: filteredBookmarks,
+      bookmarkTreeOnRender: filteredBookmarkTree,
       searchStr: value,
     });
   };
@@ -36,19 +33,19 @@ class App extends Component {
   handleKeyDowns = (event) => {
     const {
       activeSuggestion,
-      bookmarks,
-      bookmarksOnMount,
+      bookmarkTreeOnRender,
+      bookmarkTreeOnMount,
       folderArr,
       searchStr,
     } = this.state;
     const { key, metaKey } = event;
-    const bookmark = bookmarks[activeSuggestion];
-    const numBookmarksRendered = bookmarks.length;
+    const bookmarkItem = bookmarkTreeOnRender[activeSuggestion];
+    const numBookmarkItemsRendered = bookmarkTreeOnRender.length;
     let suggestion = activeSuggestion;
     const newFolderArr = folderArr;
     if (key === "ArrowDown") {
       suggestion++;
-      if (suggestion === numBookmarksRendered) {
+      if (suggestion === numBookmarkItemsRendered) {
         suggestion = 0;
       }
       this.setState({
@@ -58,29 +55,29 @@ class App extends Component {
     if (key === "ArrowUp") {
       suggestion--;
       if (suggestion < 0) {
-        suggestion = numBookmarksRendered - 1;
+        suggestion = numBookmarkItemsRendered - 1;
       }
       this.setState({
         activeSuggestion: suggestion,
       });
     }
     if (key === "Enter") {
-      if (bookmark.type === "bookmark") {
+      if (bookmarkItem.type === "bookmark") {
         if (metaKey) {
           chrome.tabs.create({
-            url: bookmark.url,
+            url: bookmarkItem.url,
           });
         } else {
           chrome.tabs.update({
-            url: bookmark.url,
+            url: bookmarkItem.url,
           });
         }
       }
-      if (bookmark.type === "folder") {
-        newFolderArr.push(bookmark.title);
+      if (bookmarkItem.type === "folder") {
+        newFolderArr.push(bookmarkItem.title);
         this.setState({
           activeSuggestion: 0,
-          bookmarks: Object.values(bookmark.children),
+          bookmarkTreeOnRender: bookmarkItem.children,
           folderArr: newFolderArr,
           searchStr: "",
         });
@@ -88,40 +85,42 @@ class App extends Component {
     }
     if (key === "Backspace" && searchStr === "") {
       let parentBookmarks;
-      const parentFolder = newFolderArr[newFolderArr.length - 1];
       if (newFolderArr.length === 1) {
         return null;
       } else if (newFolderArr.length === 2) {
         newFolderArr.pop();
-        parentBookmarks = Object.values(bookmarksOnMount);
+        parentBookmarks = bookmarkTreeOnMount;
       } else if (newFolderArr.length > 2) {
         newFolderArr.pop();
-        parentBookmarks = Object.values(
-          bookmarksOnMount[newFolderArr[newFolderArr.length - 1]].children
-        );
+        parentBookmarks =
+          bookmarkTreeOnMount[newFolderArr[newFolderArr.length - 1]].children;
       }
       this.setState({
-        // activeSuggestion: 0,
-        bookmarks: parentBookmarks,
+        activeSuggestion: 0,
+        bookmarkTreeOnRender: parentBookmarks,
         folderArr: newFolderArr,
-        // searchStr: "",
+        searchStr: "",
       });
     }
   };
 
   componentDidMount() {
-    getBookmarks((displayTree) => {
-      const bookmarks = Object.values(displayTree);
+    getBookmarkTree((bookmarkTree) => {
       this.setState({
-        bookmarks,
-        bookmarksOnMount: displayTree,
+        bookmarkTreeOnRender: bookmarkTree,
+        bookmarkTreeOnMount: bookmarkTree,
       });
     });
   }
 
   render() {
     const { filterOnChange, handleKeyDowns } = this;
-    const { activeSuggestion, bookmarks, folderArr, searchStr } = this.state;
+    const {
+      activeSuggestion,
+      bookmarkTreeOnRender,
+      folderArr,
+      searchStr,
+    } = this.state;
     return (
       <div>
         <GlobalFonts />
@@ -132,7 +131,7 @@ class App extends Component {
           {folderArr.length > 1 ? <h2>{folderArr.join("/")}</h2> : null}
           <SearchResults
             activeSuggestion={activeSuggestion}
-            bookmarks={bookmarks}
+            bookmarkTree={bookmarkTreeOnRender}
             filterOnChange={filterOnChange}
             handleKeyDowns={handleKeyDowns}
             searchStr={searchStr}

@@ -1,3 +1,4 @@
+/*global chrome*/
 export const searchFilter = (inputArr, inputStr) => {
   if (inputStr) {
     return inputArr.reduce((acc, inputObj) => {
@@ -6,8 +7,7 @@ export const searchFilter = (inputArr, inputStr) => {
         acc.push(inputObj);
       }
       if (children) {
-        const childrenAsArray = Object.values(children);
-        acc.push(...searchFilter(childrenAsArray, inputStr));
+        acc.push(...searchFilter(children, inputStr));
       }
       return acc;
     }, []);
