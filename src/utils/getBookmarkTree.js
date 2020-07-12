@@ -15,21 +15,13 @@ export const getBookmarkTree = (callback) => {
       title: "Other Bookmarks",
       children: mapper(otherBookmarks),
     });
-    const bookmarks = _.orderBy(
-      bookmarkTree.filter((branch) => {
-        return branch.type === "bookmark";
-      }),
-      ["title"],
-      ["asc"]
+
+    const orderedBookmarkTree = _.orderBy(
+      bookmarkTree,
+      ["type", "title"],
+      ["desc", "asc"]
     );
-    const folders = _.orderBy(
-      bookmarkTree.filter((branch) => {
-        return branch.type === "folder";
-      }),
-      ["title"],
-      ["asc"]
-    );
-    const orderedBookmarkTree = folders.concat(bookmarks);
+    chrome.runtime.sendMessage(orderedBookmarkTree);
     callback(orderedBookmarkTree);
   });
 };
