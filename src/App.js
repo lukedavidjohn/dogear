@@ -4,9 +4,11 @@ import { getBookmarks } from "./utils/getBookmarks";
 import { searchFilter } from "./utils/searchFilter";
 import SearchResults from "./components/SearchResults";
 import styled from "styled-components";
+import GlobalFonts from "./fonts/fonts";
 
 const Container = styled.div`
   width: 400px;
+  font-family: "Quicksand";
 `;
 
 class App extends Component {
@@ -121,19 +123,22 @@ class App extends Component {
     const { filterOnChange, handleKeyDowns } = this;
     const { activeSuggestion, bookmarks, folderArr, searchStr } = this.state;
     return (
-      <Container>
-        <header>
-          <h1>DogEar</h1>
-        </header>
-        {folderArr.length > 1 ? <h2>{folderArr.join("/")}</h2> : null}
-        <SearchResults
-          activeSuggestion={activeSuggestion}
-          bookmarks={bookmarks}
-          filterOnChange={filterOnChange}
-          handleKeyDowns={handleKeyDowns}
-          searchStr={searchStr}
-        />
-      </Container>
+      <div>
+        <GlobalFonts />
+        <Container>
+          <header>
+            <h1>DogEar</h1>
+          </header>
+          {folderArr.length > 1 ? <h2>{folderArr.join("/")}</h2> : null}
+          <SearchResults
+            activeSuggestion={activeSuggestion}
+            bookmarks={bookmarks}
+            filterOnChange={filterOnChange}
+            handleKeyDowns={handleKeyDowns}
+            searchStr={searchStr}
+          />
+        </Container>
+      </div>
     );
   }
 }
