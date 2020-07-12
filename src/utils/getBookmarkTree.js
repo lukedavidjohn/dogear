@@ -1,6 +1,6 @@
 /*global chrome*/
 import { mapper } from "./mapper";
-import _ from "lodash";
+import { orderBy } from "./orderBy";
 
 export const getBookmarkTree = (callback) => {
   chrome.bookmarks.getTree(([tree]) => {
@@ -16,11 +16,7 @@ export const getBookmarkTree = (callback) => {
       children: mapper(otherBookmarks),
     });
 
-    const orderedBookmarkTree = _.orderBy(
-      bookmarkTree,
-      ["type", "title"],
-      ["desc", "asc"]
-    );
+    const orderedBookmarkTree = orderBy(bookmarkTree);
     chrome.runtime.sendMessage(orderedBookmarkTree);
     callback(orderedBookmarkTree);
   });

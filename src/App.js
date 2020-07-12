@@ -5,6 +5,7 @@ import { searchFilter } from "./utils/searchFilter";
 import SearchResults from "./components/SearchResults";
 import styled from "styled-components";
 import GlobalFonts from "./fonts/fonts";
+import { orderBy } from "./utils/orderBy";
 
 const Container = styled.div`
   width: 400px;
@@ -24,8 +25,9 @@ class App extends Component {
     const { value } = event.target;
     const { bookmarkTreeOnMount } = this.state;
     const filteredBookmarkTree = searchFilter(bookmarkTreeOnMount, value);
+    const orderedFilteredBookmarkTree = orderBy(filteredBookmarkTree);
     this.setState({
-      bookmarkTreeOnRender: filteredBookmarkTree,
+      bookmarkTreeOnRender: orderedFilteredBookmarkTree,
       searchStr: value,
     });
   };
@@ -77,30 +79,30 @@ class App extends Component {
         newFolderArr.push(bookmarkItem.title);
         this.setState({
           activeSuggestion: 0,
-          bookmarkTreeOnRender: bookmarkItem.children,
+          bookmarkTreeOnRender: orderBy(bookmarkItem.children),
           folderArr: newFolderArr,
           searchStr: "",
         });
       }
     }
     if (key === "Backspace" && searchStr === "") {
-      let parentBookmarks;
-      if (newFolderArr.length === 1) {
-        return null;
-      } else if (newFolderArr.length === 2) {
-        newFolderArr.pop();
-        parentBookmarks = bookmarkTreeOnMount;
-      } else if (newFolderArr.length > 2) {
-        newFolderArr.pop();
-        parentBookmarks =
-          bookmarkTreeOnMount[newFolderArr[newFolderArr.length - 1]].children;
-      }
-      this.setState({
-        activeSuggestion: 0,
-        bookmarkTreeOnRender: parentBookmarks,
-        folderArr: newFolderArr,
-        searchStr: "",
-      });
+      // let parentBookmarks;
+      // if (newFolderArr.length === 1) {
+      //   return null;
+      // } else if (newFolderArr.length === 2) {
+      //   newFolderArr.pop();
+      //   parentBookmarks = bookmarkTreeOnMount;
+      // } else if (newFolderArr.length > 2) {
+      //   newFolderArr.pop();
+      //   parentBookmarks =
+      //     bookmarkTreeOnMount[newFolderArr[newFolderArr.length - 1]].children;
+      // }
+      // this.setState({
+      //   activeSuggestion: 0,
+      //   bookmarkTreeOnRender: parentBookmarks,
+      //   folderArr: newFolderArr,
+      //   searchStr: "",
+      // });
     }
   };
 
