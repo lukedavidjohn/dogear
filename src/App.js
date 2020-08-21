@@ -6,6 +6,7 @@ import SearchResults from "./components/SearchResults";
 import styled from "styled-components";
 import GlobalFonts from "./fonts/fonts";
 import { orderBy } from "./utils/orderBy";
+import _ from "lodash";
 
 const Container = styled.div`
   width: 400px;
@@ -18,13 +19,20 @@ class App extends Component {
     bookmarkTreeOnRender: [],
     bookmarkTreeOnMount: [],
     folderArr: ["."],
+    inFolder: false,
     searchStr: null,
   };
 
   filterOnChange = (event) => {
     const { value } = event.target;
-    const { bookmarkTreeOnMount } = this.state;
-    const filteredBookmarkTree = searchFilter(bookmarkTreeOnMount, value);
+    const { bookmarkTreeOnRender, bookmarkTreeOnMount, inFolder } = this.state;
+    let bookmarksToSearch;
+    if (inFolder === true) {
+      bookmarksToSearch = bookmarkTreeOnRender;
+    } else {
+      bookmarksToSearch = bookmarkTreeOnMount;
+    }
+    const filteredBookmarkTree = searchFilter(bookmarksToSearch, value);
     const orderedFilteredBookmarkTree = orderBy(filteredBookmarkTree);
     this.setState({
       bookmarkTreeOnRender: orderedFilteredBookmarkTree,
@@ -38,9 +46,10 @@ class App extends Component {
       bookmarkTreeOnRender,
       bookmarkTreeOnMount,
       folderArr,
+      inFolder,
       searchStr,
     } = this.state;
-    const { key, metaKey } = event;
+    const { key, ctrlKey, metaKey } = event;
     const bookmarkItem = bookmarkTreeOnRender[activeSuggestion];
     const numBookmarkItemsRendered = bookmarkTreeOnRender.length;
     let suggestion = activeSuggestion;
@@ -65,7 +74,7 @@ class App extends Component {
     }
     if (key === "Enter") {
       if (bookmarkItem.type === "bookmark") {
-        if (metaKey) {
+        if (metaKey || ctrlKey) {
           chrome.tabs.create({
             url: bookmarkItem.url,
           });
@@ -74,6 +83,7 @@ class App extends Component {
             url: bookmarkItem.url,
           });
         }
+        window.close();
       }
       if (bookmarkItem.type === "folder") {
         newFolderArr.push(bookmarkItem.title);
@@ -81,28 +91,37 @@ class App extends Component {
           activeSuggestion: 0,
           bookmarkTreeOnRender: orderBy(bookmarkItem.children),
           folderArr: newFolderArr,
+          inFolder: true,
           searchStr: "",
         });
       }
     }
+    // if (key === "Backspace" && searchStr.length === 1) {
+    //   const thing = _.filter(bookmarkTreeOnMount, { title });
+    //   chrome.runtime.sendMessage(thing);
+    // }
     if (key === "Backspace" && searchStr === "") {
-      // let parentBookmarks;
-      // if (newFolderArr.length === 1) {
-      //   return null;
-      // } else if (newFolderArr.length === 2) {
-      //   newFolderArr.pop();
-      //   parentBookmarks = bookmarkTreeOnMount;
-      // } else if (newFolderArr.length > 2) {
-      //   newFolderArr.pop();
-      //   parentBookmarks =
-      //     bookmarkTreeOnMount[newFolderArr[newFolderArr.length - 1]].children;
-      // }
-      // this.setState({
-      //   activeSuggestion: 0,
-      //   bookmarkTreeOnRender: parentBookmarks,
-      //   folderArr: newFolderArr,
-      //   searchStr: "",
-      // });
+      let parentBookmarks;
+      let toggleInFolder = inFolder;
+      if (newFolderArr.length === 1) {
+        return null;
+      } else if (newFolderArr.length === 2) {
+        newFolderArr.pop();
+        parentBookmarks = bookmarkTreeOnMount;
+        toggleInFolder = false;
+      } else if (newFolderArr.length > 2) {
+        newFolderArr.pop();
+        parentBookmarks =
+          bookmarkTreeOnMount[newFolderArr[newFolderArr.length - 1]].children;
+        toggleInFolder = true;
+      }
+      this.setState({
+        activeSuggestion: 0,
+        bookmarkTreeOnRender: parentBookmarks,
+        folderArr: newFolderArr,
+        inFolder: toggleInFolder,
+        searchStr: "",
+      });
     }
   };
 
